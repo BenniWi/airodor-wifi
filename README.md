@@ -37,17 +37,17 @@ RD68
 mode: 
   ventilation modes:
     0 = 0ff 
-    1 = min 
-    2 = med 
-    4 = max (when setting) 
-    6 = max (when reading) 
-    8 = Durchzug med 
-    16 = Durchzug max 
-    32 = Zuluft med 
-    64 = Zuluft max 
+    1 = min (alternating)
+    2 = med (alternating)
+    4 = max (alternating, when setting) 
+    6 = max (alternating, when reading) 
+    8 = med (permanent one direction)
+    16 = max (permanent one direction)
+    32 = med (permanent only to inside)
+    64 = max (permanent only to inside)
 ```
 ```
-  timer modes: 
+  timer modes: (timers are only usable to turn the ventilation off, not for other modes)
     0 = off 
     1..12 = hours 
  ```
