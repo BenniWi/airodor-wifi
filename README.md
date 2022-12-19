@@ -52,7 +52,7 @@ mode:
     1..12 = hours 
  ```
 ```
-answers: </br>
+answers: 
   R -> value = R<group><mode> 
   W -> success = M<group>OK 
   T -> value = T<group><mode> 
