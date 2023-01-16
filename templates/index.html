@@ -1,19 +1,65 @@
-<head>
-    <title>{{ title }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+<h2>Ventilation Server</h2>
 
-<body>
-    <div class="App">
-        <header class="App-header">
-            <img src="{{ url_for('static', filename='Octocat.png') }}" class="App-logo" alt="logo" />
-            <p>
-                GitHub Codespaces <span class="heart">♥️</span> Flask
-            </p>
-            <p class="small">
-                Edit <code>templates/index.html</code> and refresh to see your changes!
-            </p>
-        </header>
-    </div>
-</body>
+IP-Address: 
+<input type="text" name="ipAddress" placeholder="192.168.2.122" size="10" required>
+<button type="button" name="updateIPButton">
+	Set
+</button>
 
-</html>
+
+</br>
+</br>
+
+
+Status Group A: <input type="text" name="statusA" placeholder="Alternating Medium" size="30" readonly> 
+last update <input type="time" name="statusTimeA" value="14:16" readonly>
+</br>
+Set A to
+<select name="ModesA" id="modesA">
+  <option value="altmin">Alternating Minimum</option>
+  <option value="altmed">Alternating Medium</option>
+  <option value="altmax">Alternating Maximum</option>
+</select>
+in <input type="number" name="timerValueA" placeholder="0" size="10" step="1" value="0" max="999" required> min 
+<button type="button" name="updateGroupA">
+	Set
+</button>
+</br>
+Timer queue for group A
+</br>
+<textarea name="queueA" placeholder="Timer A queue elements" cols="20" rows="4" minlength="1" maxlength="500" readonly></textarea>
+</br>
+
+
+</br>
+</br>
+
+
+Status Group B: <input type="text" name="statusB" placeholder="Alternating Medium" size="30" readonly> 
+last update <input type="time" name="statusTimeB" value="14:16" readonly>
+</br>
+Set B to
+<select name="ModesB" id="modesB">
+  <option value="altmin">Alternating Minimum</option>
+  <option value="altmed">Alternating Medium</option>
+  <option value="altmax">Alternating Maximum</option>
+</select>
+in <input type="number" name="timerValueB" placeholder="0" size="10" step="1" value="0" max="999" required> min 
+<button type="button" name="updateGroupB">
+	Set
+</button>
+</br>
+Timer queue for group B
+</br>
+<textarea name="queueB" placeholder="Timer A queue elements" cols="20" rows="4" minlength="1" maxlength="500" readonly></textarea>
+</br>
+
+
+</br>
+</br>
+
+
+<button type="button" name="updateStatusAB">
+	update status A/B
+</button>
+
