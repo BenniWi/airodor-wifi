@@ -36,7 +36,7 @@ RD68
 ```
 mode: 
   ventilation modes:
-    0 = 0ff 
+    0 = Off 
     1 = min (alternating)
     2 = med (alternating)
     4 = max (alternating, when setting) 
