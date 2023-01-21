@@ -1,65 +1,68 @@
-<h2>Ventilation Server</h2>
+<head>
+  <h2>Ventilation Server</h2>
 
-IP-Address: 
-<input type="text" name="ipAddress" placeholder="192.168.2.122" size="10" required>
-<button type="button" name="updateIPButton">
-	Set
-</button>
-
-
-</br>
-</br>
-
-
-Status Group A: <input type="text" name="statusA" placeholder="Alternating Medium" size="30" readonly> 
-last update <input type="time" name="statusTimeA" value="14:16" readonly>
-</br>
-Set A to
-<select name="ModesA" id="modesA">
-  <option value="altmin">Alternating Minimum</option>
-  <option value="altmed">Alternating Medium</option>
-  <option value="altmax">Alternating Maximum</option>
-</select>
-in <input type="number" name="timerValueA" placeholder="0" size="10" step="1" value="0" max="999" required> min 
-<button type="button" name="updateGroupA">
-	Set
-</button>
-</br>
-Timer queue for group A
-</br>
-<textarea name="queueA" placeholder="Timer A queue elements" cols="20" rows="4" minlength="1" maxlength="500" readonly></textarea>
-</br>
+  IP-Address: 
+  <input type="text" name="ipAddress" placeholder="192.168.2.122" size="10" required>
+  <button type="button" name="updateIPButton">
+    Set
+  </button>
+</head>
 
 
 </br>
 </br>
 
-
-Status Group B: <input type="text" name="statusB" placeholder="Alternating Medium" size="30" readonly> 
-last update <input type="time" name="statusTimeB" value="14:16" readonly>
-</br>
-Set B to
-<select name="ModesB" id="modesB">
-  <option value="altmin">Alternating Minimum</option>
-  <option value="altmed">Alternating Medium</option>
-  <option value="altmax">Alternating Maximum</option>
-</select>
-in <input type="number" name="timerValueB" placeholder="0" size="10" step="1" value="0" max="999" required> min 
-<button type="button" name="updateGroupB">
-	Set
-</button>
-</br>
-Timer queue for group B
-</br>
-<textarea name="queueB" placeholder="Timer A queue elements" cols="20" rows="4" minlength="1" maxlength="500" readonly></textarea>
-</br>
-
-
-</br>
-</br>
+<body>
+  Status Group A: <input type="text" name="statusA" placeholder="Alternating Medium" size="30" readonly> 
+  last update <input type="time" name="statusTimeA" value="14:16" readonly>
+  </br>
+  Set A to
+  <select name="ModesA" id="modesA">
+    <option value="altmin">Alternating Minimum</option>
+    <option value="altmed">Alternating Medium</option>
+    <option value="altmax">Alternating Maximum</option>
+  </select>
+  in <input type="number" name="timerValueA" placeholder="0" size="10" step="1" value="0" max="999" required> min 
+  <button type="button" name="updateGroupA">
+    Set
+  </button>
+  </br>
+  Timer queue for group A
+  </br>
+  <textarea name="queueA" placeholder="Timer A queue elements" cols="20" rows="4" minlength="1" maxlength="500" readonly></textarea>
+  </br>
 
 
-<button type="button" name="updateStatusAB">
-	update status A/B
-</button>
+  </br>
+  </br>
+
+
+  Status Group B: <input type="text" name="statusB" placeholder="Alternating Medium" size="30" readonly> 
+  last update <input type="time" name="statusTimeB" value="14:16" readonly>
+  </br>
+  Set B to
+  <select name="ModesB" id="modesB">
+    <option value="altmin">Alternating Minimum</option>
+    <option value="altmed">Alternating Medium</option>
+    <option value="altmax">Alternating Maximum</option>
+  </select>
+  in <input type="number" name="timerValueB" placeholder="0" size="10" step="1" value="0" max="999" required> min 
+  <button type="button" name="updateGroupB">
+    Set
+  </button>
+  </br>
+  Timer queue for group B
+  </br>
+  <textarea name="queueB" placeholder="Timer A queue elements" cols="20" rows="4" minlength="1" maxlength="500" readonly></textarea>
+  </br>
+
+
+  </br>
+  </br>
+
+
+  <button type="button" name="updateStatusAB">
+    update status A/B
+  </button>
+</body>
 
