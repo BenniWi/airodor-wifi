@@ -7,7 +7,7 @@ from airodor_wifi_api import airodor
 
 class TestAirodorApi(unittest.TestCase):
     '''This module provides tests for the airodor module'''
-    def test_retunr(self):
+    def test_get_base_url(self):
         """
         Test that the base url is correct
         """
