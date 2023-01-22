@@ -7,6 +7,7 @@ from airodor_wifi_api import airodor
 
 class TestAirodorApi(unittest.TestCase):
     '''This module provides tests for the airodor module'''
+
     def test_get_base_url(self):
         """
         Test that the base url is correct
@@ -21,16 +22,16 @@ class TestAirodorApi(unittest.TestCase):
         """
         ipv4 = ip_address('192.168.2.122')
         result = airodor.get_request_url(
-            ip_addr = ipv4,
-            action = airodor.VentilationAction.WRITE_MODE,
-            group = airodor.VentilationGroup.A,
-            mode = airodor.VentilationMode.ALTERNATING_MAX)
+            ip_addr=ipv4,
+            action=airodor.VentilationAction.WRITE_MODE,
+            group=airodor.VentilationGroup.A,
+            mode=airodor.VentilationMode.ALTERNATING_MAX)
         self.assertEqual(result, URL("http://192.168.2.122/msg&Function=WA4"))
         result = airodor.get_request_url(
-            ip_addr = ipv4,
-            action = airodor.VentilationAction.WRITE_MODE,
-            group = airodor.VentilationGroup.A,
-            mode = airodor.VentilationMode.ALTERNATING_MED)
+            ip_addr=ipv4,
+            action=airodor.VentilationAction.WRITE_MODE,
+            group=airodor.VentilationGroup.A,
+            mode=airodor.VentilationMode.ALTERNATING_MED)
         self.assertEqual(result, URL("http://192.168.2.122/msg&Function=WA2"))
 
     def test_get_request_url_read(self):
@@ -39,14 +40,14 @@ class TestAirodorApi(unittest.TestCase):
         """
         ipv4 = ip_address('192.168.2.122')
         result = airodor.get_request_url(
-            ip_addr = ipv4,
-            action = airodor.VentilationAction.READ_MODE,
-            group = airodor.VentilationGroup.A)
+            ip_addr=ipv4,
+            action=airodor.VentilationAction.READ_MODE,
+            group=airodor.VentilationGroup.A)
         self.assertEqual(result, URL("http://192.168.2.122/msg&Function=RA"))
         result = airodor.get_request_url(
-            ip_addr = ipv4,
-            action = airodor.VentilationAction.READ_MODE,
-            group = airodor.VentilationGroup.B)
+            ip_addr=ipv4,
+            action=airodor.VentilationAction.READ_MODE,
+            group=airodor.VentilationGroup.B)
         self.assertEqual(result, URL("http://192.168.2.122/msg&Function=RB"))
 
 

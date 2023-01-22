@@ -9,6 +9,7 @@ class VentilationGroup(Enum):
     A = "A"
     B = "B"
 
+
 class VentilationAction(Enum):
     '''Basic enum to represent ventilation actions'''
     READ_MODE = "R"
@@ -35,6 +36,7 @@ def get_base_api_url(ip_addr: ip_address) -> URL:
     '''create the basic url to communicate to the wifi module'''
     return URL(f"http://{ip_addr}/msg&Function=")
 
+
 def get_request_url(ip_addr: ip_address,
                     action: VentilationAction,
                     group: VentilationGroup,
@@ -57,7 +59,8 @@ def get_request_url(ip_addr: ip_address,
     if action == VentilationAction.READ_MODE:
         return URL(f"{url}{action.value}{group.value}")
 
-    raise NotImplementedError(f"VentilationAction {action} is not yet implemented")
+    raise NotImplementedError(
+        f"VentilationAction {action} is not yet implemented")
 
 
 def get_status(ip_addr: ip_address, group: VentilationGroup):
