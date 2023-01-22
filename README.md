@@ -12,6 +12,8 @@ General address to contact
 
 ```http://<ip-address>/msg&Function=<action><group><mode>```
 
+mode is only relevant in case somethin is "written" (set)
+
 ```
 action = [R, W, T, S] 
 where:
