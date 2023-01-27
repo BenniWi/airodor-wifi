@@ -32,6 +32,14 @@ class VentilationMode(Enum):
     INSIDE_MAX = 64
 
 
+class VentilationAnswerType(Enum):
+    '''Basic enum to represent the available answer types'''
+    R = "R"
+    M = "M"
+    T = "T"
+    S = "S"
+
+
 def get_base_api_url(ip_addr: ip_address) -> URL:
     '''create the basic url to communicate to the wifi module'''
     return URL(f"http://{ip_addr}/msg&Function=")
@@ -61,6 +69,23 @@ def get_request_url(ip_addr: ip_address,
 
     raise NotImplementedError(
         f"VentilationAction {action} is not yet implemented")
+
+
+def interpret_answer(answer: str) -> tuple:
+    # first character is always answer type
+    vat = VentilationAnswerType(answer[0])
+    # second character is always group
+    group = VentilationGroup(answer[1])
+
+    if vat == VentilationAnswerType.R:
+        # for read type, the character 2+ is the ventilation mode
+        return group, VentilationMode(int(answer[2:]))
+    if vat == VentilationAnswerType.M:
+        # for write type, the character 2+ is the "OK" notifier
+        return group, (answer[2:] == "OK")
+
+    raise NotImplementedError(
+        f"VentilationAnswer for {vat} is not yet implemented")
 
 
 def get_status(ip_addr: ip_address, group: VentilationGroup):
