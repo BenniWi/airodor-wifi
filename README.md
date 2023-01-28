@@ -7,10 +7,18 @@ To run this application:
 flask --debug run
 ```
 
+# connect codespace with local network
+using the GitHub cli:
+```bash
+gh net
+```
+
+for more details check this https://github.com/github/gh-net#codespaces-network-bridge
+
 # Reverse Engineered API
 General address to contact
 
-```http://<ip-address>/msg&Function=<action><group><mode>```
+```http://<ip-address>/msg?Function=<action><group><mode>```
 
 mode is only relevant in case somethin is "written" (set)
 

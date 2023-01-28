@@ -2,6 +2,7 @@
 from enum import Enum
 from ipaddress import ip_address
 from yarl import URL
+import requests
 
 
 class VentilationGroup(Enum):
@@ -42,7 +43,7 @@ class VentilationAnswerType(Enum):
 
 def get_base_api_url(ip_addr: ip_address) -> URL:
     '''create the basic url to communicate to the wifi module'''
-    return URL(f"http://{ip_addr}/msg&Function=")
+    return URL(f"http://{ip_addr}/msg?Function=")
 
 
 def get_request_url(ip_addr: ip_address,
@@ -71,23 +72,36 @@ def get_request_url(ip_addr: ip_address,
         f"VentilationAction {action} is not yet implemented")
 
 
-def interpret_answer(answer: str) -> tuple:
+def interpret_answer(answer: requests.Response) -> tuple:
+    '''interpret the request answer from the wifi module.
+    For READ, the return is (group, mode).
+    For WRITE, the return is (group, OK?)'''
+    # assert that the answer is valid
+    assert answer.ok
     # first character is always answer type
-    vat = VentilationAnswerType(answer[0])
+    vat = VentilationAnswerType(answer.text[0])
     # second character is always group
-    group = VentilationGroup(answer[1])
+    group = VentilationGroup(answer.text[1])
 
     if vat == VentilationAnswerType.R:
         # for read type, the character 2+ is the ventilation mode
-        return group, VentilationMode(int(answer[2:]))
+        return group, VentilationMode(int(answer.text[2:]))
     if vat == VentilationAnswerType.M:
         # for write type, the character 2+ is the "OK" notifier
-        return group, (answer[2:] == "OK")
+        return group, (answer.text[2:] == "OK")
 
     raise NotImplementedError(
         f"VentilationAnswer for {vat} is not yet implemented")
 
 
-def get_status(ip_addr: ip_address, group: VentilationGroup):
-    '''get the current status of the ventilation'''
+def get_mode(ip_addr: ip_address, group: VentilationGroup)\
+        -> VentilationMode:
+    '''get the current mode for the given ip and ventilation group'''
     print(f"getting status for group {group} from {ip_addr}")
+    request = get_request_url(ip_addr=ip_addr,
+                              action=VentilationAction.READ_MODE,
+                              group=group)
+    r = requests.get(str(request))
+    r_group, r_mode = interpret_answer(r)
+    assert r_group == group  # answer should fit to the request
+    return r_mode

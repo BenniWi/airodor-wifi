@@ -3,6 +3,7 @@ import unittest
 from ipaddress import ip_address
 from yarl import URL
 from airodor_wifi_api import airodor
+import requests
 
 
 class TestAirodorApi(unittest.TestCase):
@@ -14,7 +15,7 @@ class TestAirodorApi(unittest.TestCase):
         """
         ipv4 = ip_address('192.168.2.122')
         result = airodor.get_base_api_url(ipv4)
-        self.assertEqual(result, URL("http://192.168.2.122/msg&Function="))
+        self.assertEqual(result, URL("http://192.168.2.122/msg?Function="))
 
     def test_get_request_url_write(self):
         """
@@ -26,13 +27,13 @@ class TestAirodorApi(unittest.TestCase):
             action=airodor.VentilationAction.WRITE_MODE,
             group=airodor.VentilationGroup.A,
             mode=airodor.VentilationMode.ALTERNATING_MAX)
-        self.assertEqual(result, URL("http://192.168.2.122/msg&Function=WA4"))
+        self.assertEqual(result, URL("http://192.168.2.122/msg?Function=WA4"))
         result = airodor.get_request_url(
             ip_addr=ipv4,
             action=airodor.VentilationAction.WRITE_MODE,
             group=airodor.VentilationGroup.A,
             mode=airodor.VentilationMode.ALTERNATING_MED)
-        self.assertEqual(result, URL("http://192.168.2.122/msg&Function=WA2"))
+        self.assertEqual(result, URL("http://192.168.2.122/msg?Function=WA2"))
 
     def test_get_request_url_read(self):
         """
@@ -43,30 +44,37 @@ class TestAirodorApi(unittest.TestCase):
             ip_addr=ipv4,
             action=airodor.VentilationAction.READ_MODE,
             group=airodor.VentilationGroup.A)
-        self.assertEqual(result, URL("http://192.168.2.122/msg&Function=RA"))
+        self.assertEqual(result, URL("http://192.168.2.122/msg?Function=RA"))
         result = airodor.get_request_url(
             ip_addr=ipv4,
             action=airodor.VentilationAction.READ_MODE,
             group=airodor.VentilationGroup.B)
-        self.assertEqual(result, URL("http://192.168.2.122/msg&Function=RB"))
+        self.assertEqual(result, URL("http://192.168.2.122/msg?Function=RB"))
 
     def test_interpret_answer(self):
         """
         Test to interpret the answer from the module
         """
-        a, b = airodor.interpret_answer("RB0")
+        r = requests.Response
+        r.ok = True
+
+        r.text = "RB0"
+        a, b = airodor.interpret_answer(r)
         self.assertEqual(a, airodor.VentilationGroup.B)
         self.assertEqual(b, airodor.VentilationMode.OFF)
 
-        a, b = airodor.interpret_answer("RA64")
+        r.text = "RA64"
+        a, b = airodor.interpret_answer(r)
         self.assertEqual(a, airodor.VentilationGroup.A)
         self.assertEqual(b, airodor.VentilationMode.INSIDE_MAX)
 
-        a, b = airodor.interpret_answer("MAOK")
+        r.text = "MAOK"
+        a, b = airodor.interpret_answer(r)
         self.assertEqual(a, airodor.VentilationGroup.A)
         self.assertEqual(b, True)
 
-        a, b = airodor.interpret_answer("MBNOOK")
+        r.text = "MBNOOK"
+        a, b = airodor.interpret_answer(r)
         self.assertEqual(a, airodor.VentilationGroup.B)
         self.assertEqual(b, False)
 
