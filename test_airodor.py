@@ -50,6 +50,26 @@ class TestAirodorApi(unittest.TestCase):
             group=airodor.VentilationGroup.B)
         self.assertEqual(result, URL("http://192.168.2.122/msg&Function=RB"))
 
+    def test_interpret_answer(self):
+        """
+        Test to interpret the answer from the module
+        """
+        a, b = airodor.interpret_answer("RB0")
+        self.assertEqual(a, airodor.VentilationGroup.B)
+        self.assertEqual(b, airodor.VentilationMode.OFF)
+
+        a, b = airodor.interpret_answer("RA64")
+        self.assertEqual(a, airodor.VentilationGroup.A)
+        self.assertEqual(b, airodor.VentilationMode.INSIDE_MAX)
+
+        a, b = airodor.interpret_answer("MAOK")
+        self.assertEqual(a, airodor.VentilationGroup.A)
+        self.assertEqual(b, True)
+
+        a, b = airodor.interpret_answer("MBNOOK")
+        self.assertEqual(a, airodor.VentilationGroup.B)
+        self.assertEqual(b, False)
+
 
 if __name__ == '__main__':
     unittest.main()
