@@ -23,7 +23,9 @@
     },
     "vscode": {
       "extensions": [
-        "ms-python.python"
+        "ms-python.python",
+        "donjayamanne.githistory",
+        "mhutchie.git-graph"
       ]
     }
   },
