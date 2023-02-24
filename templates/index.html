@@ -1,70 +1,66 @@
 <head>
   <h2>Ventilation Server</h2>
 
-  IP-Address: 
-  <input type="text" name="ipAddress" placeholder="192.168.2.122" size="10" required>
-  <button type="button" name="updateIPButton">
-    Set
-  </button>
+  <form action="/updateIP/" method="post">
+    <label for="IP-Address">IP-Address:</label>
+    <input type="text" id="ip_address" name="ip_address" placeholder={{ip_address}} size="10" required>
+    <button type="submit">set</button>
+  </form>
 </head>
 
-
-</br>
 </br>
 
 <body>
-  Status Group A: <input type="text" name="statusA" placeholder="Alternating Medium" size="30" readonly> 
-  last update <input type="time" name="statusTimeA" value="14:16" readonly>
+  Status Group A: <input type="text" name="statusA" placeholder={{status_string_group_A}} size="30" readonly> 
+  last update <input type="time" name="statusTimeA" value={{status_time_group_A}} readonly>
   </br>
-  Set A to
-  <select name="ModesA" id="modesA">
-    <option value="altmin">Alternating Minimum</option>
-    <option value="altmed">Alternating Medium</option>
-    <option value="altmax">Alternating Maximum</option>
-  </select>
-  in <input type="number" name="timerValueA" placeholder="0" size="10" step="1" value="0" max="999" required> min 
-  <button type="button" name="updateGroupA">
-    Set
-  </button>
-  </br>
-  Timer queue for group A
-  </br>
-  <textarea name="queueA" placeholder="Timer A queue elements" cols="20" rows="4" minlength="1" maxlength="500" readonly></textarea>
+  Status Group B: <input type="text" name="statusB" placeholder={{status_string_group_B}} size="30" readonly> 
+  last update <input type="time" name="statusTimeB" value={{status_time_group_B}} readonly>
   </br>
 
-
-  </br>
-  </br>
-
-
-  Status Group B: <input type="text" name="statusB" placeholder="Alternating Medium" size="30" readonly> 
-  last update <input type="time" name="statusTimeB" value="14:16" readonly>
-  </br>
-  Set B to
-  <select name="ModesB" id="modesB">
-    <option value="altmin">Alternating Minimum</option>
-    <option value="altmed">Alternating Medium</option>
-    <option value="altmax">Alternating Maximum</option>
-  </select>
-  in <input type="number" name="timerValueB" placeholder="0" size="10" step="1" value="0" max="999" required> min 
-  <button type="button" name="updateGroupB">
-    Set
-  </button>
-  </br>
-  Timer queue for group B
-  </br>
-  <textarea name="queueB" placeholder="Timer A queue elements" cols="20" rows="4" minlength="1" maxlength="500" readonly></textarea>
-  </br>
+  <form action="/add_timer/" method="post">
+    <label for="Group">Set Group:</label>
+    <select name="group_select" id="group_select">
+      <option value="both" label="both" SELECTED>A/B</option>
+      <option value="A" label="A">A</option>
+      <option value="B" label="B">B</option>
+    </select>
+    to
+    <select name="mode_select" id="mode_select">
+      <option value="-1" label="None" SELECTED>None</option>
+      {% for mode in ventilation_modes %}
+        {% if not (mode.name.endswith("_S") or mode.name.endswith("_R")) %}
+          <option value="{{mode.value}}" label="{{mode.name}}">{{mode.name}}</option>
+        {% endif %}
+      {% endfor %}
+    </select>
+    in <input type="number" name="timerValue" placeholder="0" size="10" step="1" value="0" max="999" required> min 
+    <button type="submit" value="set">set</button>
+  </form>
 
 
-  </br>
-  </br>
+  <form action="/remove_timer/" method="post">
+    Timer queue for group A
+    </br>
+    <select name="timer_list_A" size="10" multiple="multiple">  
+      {% for t in timer_list_A %}
+        <option value={{loop.index0}}  label={{t}}>{{t}}</option>
+      {% endfor %} 
+    </select>  
+    </br>
 
+    Timer queue for group B
+    </br>
+    <select name="timer_list_B" size="10" multiple="multiple">  
+      {% for t in timer_list_B %}
+        <option value={{loop.index0}}  label={{t}}>{{t}}</option>
+      {% endfor %} 
+    </select>  
+    </br>
+    </br>
+    <button type="submit" value="remove">remove selected timer</button>
+  </form>
 
-  <button type="button" name="updateStatusAB">
-    update status A/B
-  </button>
+  <a href="/"><input type="button" value="updateStatus"></a>
 
-  <button> <a href="/my-link/">Click me</a></button>
 </body>
-

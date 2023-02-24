@@ -4,6 +4,7 @@ from ipaddress import ip_address
 from yarl import URL
 from airodor_wifi_api import airodor
 import requests
+from datetime import datetime
 
 
 class TestAirodorApi(unittest.TestCase):
@@ -77,6 +78,46 @@ class TestAirodorApi(unittest.TestCase):
         a, b = airodor.interpret_answer(r)
         self.assertEqual(a, airodor.VentilationGroup.B)
         self.assertEqual(b, False)
+
+    def test_timer_list(self):
+        ventlist = airodor.VentilationTimerList()
+        ventlist.add_list_item(
+            # 1.11.2011 11:11:11 -> fourth entry
+            datetime(year=2011, month=11,
+                     day=1, hour=11, minute=11, second=11),
+            airodor.VentilationGroup.A,
+            airodor.VentilationMode.INSIDE_MAX)
+        ventlist.add_list_item(
+            # 1.10.2011 11:11:11 -> third entry
+            datetime(year=2011, month=10,
+                     day=1, hour=11, minute=11, second=11),
+            airodor.VentilationGroup.A,
+            airodor.VentilationMode.ALTERNATING_MAX)
+        ventlist.add_list_item(
+            # 1.11.2010 11:11:10 -> first entry
+            datetime(year=2010, month=11,
+                     day=1, hour=11, minute=11, second=10),
+            airodor.VentilationGroup.A,
+            airodor.VentilationMode.ALTERNATING_MED)
+        ventlist.add_list_item(
+            # 1.11.2010 11:11:11 -> second entry
+            datetime(year=2010, month=11,
+                     day=1, hour=11, minute=11, second=11),
+            airodor.VentilationGroup.A,
+            airodor.VentilationMode.ALTERNATING_MIN)
+
+        # order of VentilationMode should be:
+        # ALTERNATING_MED, ALTERNATING_MIN, ALTERNATING_MAX, INSIDE_MAX
+        self.assertEqual(ventlist.timer_list[0].mode, airodor.VentilationMode.ALTERNATING_MED)
+        self.assertEqual(ventlist.timer_list[1].mode, airodor.VentilationMode.ALTERNATING_MIN)
+        self.assertEqual(ventlist.timer_list[2].mode, airodor.VentilationMode.ALTERNATING_MAX)
+        self.assertEqual(ventlist.timer_list[3].mode, airodor.VentilationMode.INSIDE_MAX)
+
+        next_item = ventlist.pop_list_item()
+        self.assertEqual(next_item.mode, airodor.VentilationMode.ALTERNATING_MED)
+        self.assertEqual(ventlist.timer_list[0].mode, airodor.VentilationMode.ALTERNATING_MIN)
+        self.assertEqual(ventlist.timer_list[1].mode, airodor.VentilationMode.ALTERNATING_MAX)
+        self.assertEqual(ventlist.timer_list[2].mode, airodor.VentilationMode.INSIDE_MAX)
 
 
 if __name__ == '__main__':

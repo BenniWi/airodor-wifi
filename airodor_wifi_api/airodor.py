@@ -3,6 +3,14 @@ from enum import Enum
 from ipaddress import ip_address
 from yarl import URL
 import requests
+from datetime import datetime
+from typing import List
+
+
+class ExtendedEnum(Enum):
+    @classmethod
+    def list(cls):
+        return list(map(lambda c: c.name, cls))
 
 
 class VentilationGroup(Enum):
@@ -11,7 +19,7 @@ class VentilationGroup(Enum):
     B = "B"
 
 
-class VentilationAction(Enum):
+class VentilationAction(ExtendedEnum):
     '''Basic enum to represent ventilation actions'''
     READ_MODE = "R"
     WRITE_MODE = "W"
@@ -19,7 +27,7 @@ class VentilationAction(Enum):
     SET_OFF_TIMER = "S"
 
 
-class VentilationMode(Enum):
+class VentilationMode(ExtendedEnum):
     '''Basic enum to represent the available ventilation modes'''
     OFF = 0
     ALTERNATING_MIN = 1
@@ -39,6 +47,41 @@ class VentilationAnswerType(Enum):
     M = "M"
     T = "T"
     S = "S"
+
+
+class VentilationTimerList():
+    '''class to handle a list of timer entries for the ventilation'''
+    class VentilationTimerEntry():
+        '''helper class to hold all necessary data of a timer list entry'''
+        def __init__(self, time: datetime,
+                     group: VentilationGroup, mode: VentilationMode):
+            self.execution_time = time
+            self.group = group
+            self.mode = mode
+
+    def __init__(self):
+        self.timer_list: List[self.VentilationTimerEntry] = []
+
+    def add_list_item(self, time: datetime,
+                      group: VentilationGroup, mode: VentilationMode):
+        '''add a new entry to the timer list'''
+        self.timer_list.append(self.VentilationTimerEntry(
+                                                time=time,
+                                                group=group,
+                                                mode=mode))
+        # in-place sorting is also possible
+        self.timer_list.sort(key=lambda x:
+                             x.execution_time.strftime("%Y%m%d%H%M%S"))
+
+    def pop_list_item(self) -> VentilationTimerEntry:
+        '''remove the first item from the list and return it'''
+        return self.timer_list.pop(0)
+
+    def create_string_list(self) -> List[str]:
+        '''create a list of strings for all entries'''
+        str_list = ["{} @ {}".format(e.mode.name, e.execution_time.strftime("%H:%M:%S, %d/%m/%Y"))
+                    for e in self.timer_list]
+        return str_list
 
 
 def get_base_api_url(ip_addr: ip_address) -> URL:
