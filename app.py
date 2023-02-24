@@ -3,23 +3,85 @@ from airodor_wifi_api import airodor
 import ipaddress
 from datetime import datetime, timedelta
 import pytz
+import threading
+import time
+from queue import Queue
 
 default_IP = ipaddress.ip_address("192.168.2.122")
 current_ip = default_IP
+lock_timer_dict = threading.Lock()
 timer_dict = {"A": airodor.VentilationTimerList(), "B": airodor.VentilationTimerList()}
+timezone = pytz.timezone('Europe/Berlin')
+
+lock_message_queue = threading.Lock()
+return_message_queue = Queue(maxsize=10)
+
+do_real_communication = False
 
 app = Flask(__name__)
 
 
+def backend_thread():
+    while 1:
+        check_and_update_timers()
+        time.sleep(30)
+
+
+def add_message_to_queue(message: str):
+    global return_message_queue
+    with lock_message_queue:
+        if return_message_queue.full():
+            return_message_queue.get()
+        return_message_queue.put(message)
+
+
+def message_queue_to_string() -> str:
+    global return_message_queue
+    with lock_message_queue:
+        return str("\n".join(return_message_queue.queue))
+
+
+def check_and_update_timers():
+    with lock_timer_dict:
+        global timer_dict
+        is_ok = False
+        now = datetime.now(timezone)
+        for td in timer_dict:
+            for timer in timer_dict[td].timer_list[:]:  # loop over a copy but ...
+                if timer.execution_time < now:
+                    if do_real_communication:
+                        is_ok = airodor.set_mode(current_ip, timer.group, timer.mode)
+                    else:
+                        is_ok = True
+                    # remove the timer from the list
+                    if is_ok:
+                        print("removing timer {}".format(timer))
+                        timer_dict[td].timer_list.remove(timer)  # ... remove from the original
+                        add_message_to_queue("success for timer with group {} and mode {}".format(
+                                                                                    timer.group, timer.mode))
+                    else:
+                        add_message_to_queue("Error processing queue")
+
+
 @app.route('/')
 def index():
-    now = datetime.now(pytz.timezone('Europe/Berlin'))
-    #vent_mode_A = airodor.get_mode(current_ip,
-    #                               group=airodor.VentilationGroup.A)
-    #vent_mode_B = airodor.get_mode(current_ip,
-    #                               group=airodor.VentilationGroup.B)
-    vent_mode_A = airodor.VentilationMode.ALTERNATING_MAX
-    vent_mode_B = airodor.VentilationMode.INSIDE_MED
+    now = datetime.now(timezone)
+    if do_real_communication:
+        vent_mode_A = airodor.get_mode(current_ip, group=airodor.VentilationGroup.A)
+        if vent_mode_A:
+            add_message_to_queue("Success reading status for group A")
+        else:
+            add_message_to_queue("Error reading status for group A")
+        vent_mode_B = airodor.get_mode(current_ip, group=airodor.VentilationGroup.B)
+        if vent_mode_B:
+            add_message_to_queue("Success reading status for group B")
+        else:
+            add_message_to_queue("Error reading status for group B")
+    else:
+        vent_mode_A = airodor.VentilationMode.ALTERNATING_MAX
+        add_message_to_queue("Success reading status for group A")
+        vent_mode_B = airodor.VentilationMode.INSIDE_MED
+        add_message_to_queue("Success reading status for group B")
     return render_template('index.html',
                            ip_address=current_ip,
                            ventilation_modes=airodor.VentilationMode,
@@ -28,7 +90,8 @@ def index():
                            status_string_group_B=vent_mode_B.name,
                            status_time_group_B=now.strftime("%X"),
                            timer_list_A=timer_dict["A"].create_string_list(),
-                           timer_list_B=timer_dict["B"].create_string_list())
+                           timer_list_B=timer_dict["B"].create_string_list(),
+                           comm_log=message_queue_to_string())
 
 
 @app.route('/updateIP/', methods=['POST'])
@@ -60,11 +123,12 @@ def add_timer():
 
             for g in group:
                 global timer_dict
-                timer_dict[g.name].add_list_item(datetime.now(pytz.timezone('Europe/Berlin'))
+                timer_dict[g.name].add_list_item(datetime.now(timezone)
                                                  + timedelta(minutes=deltatime), g, mode)
 
     print(timer_dict["A"].create_string_list())
     print(timer_dict["B"].create_string_list())
+    check_and_update_timers()
     return redirect(url_for("index"))
 
 
@@ -85,4 +149,7 @@ def remove_timer():
 
 
 if __name__ == '__main__':
+
+    threading.Thread(target=backend_thread).start()
+
     app.run(debug=True)

@@ -144,7 +144,25 @@ def get_mode(ip_addr: ip_address, group: VentilationGroup)\
     request = get_request_url(ip_addr=ip_addr,
                               action=VentilationAction.READ_MODE,
                               group=group)
-    r = requests.get(str(request))
-    r_group, r_mode = interpret_answer(r)
-    assert r_group == group  # answer should fit to the request
-    return r_mode
+    try:
+        r = requests.get(str(request), timeout=10)
+        r_group, r_mode = interpret_answer(r)
+        assert r_group == group  # answer should fit to the request
+        return r_mode
+    except requests.exceptions.Timeout:
+        return None
+
+
+def set_mode(ip_addr: ip_address, group: VentilationGroup, mode: VentilationMode) -> bool:
+    '''set mode for the given ip and ventilation group'''
+    request = get_request_url(ip_addr=ip_addr,
+                              action=VentilationAction.WRITE_MODE,
+                              group=group,
+                              mode=mode)
+    try:
+        r = requests.get(str(request), timeout=10)
+        r_group, is_ok = interpret_answer(r)
+        assert r_group == group  # answer should fit to the request
+        return is_ok
+    except requests.exceptions.Timeout:
+        return False
