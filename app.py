@@ -16,7 +16,7 @@ timezone = pytz.timezone('Europe/Berlin')
 lock_message_queue = threading.Lock()
 return_message_queue = Queue(maxsize=10)
 
-do_real_communication = False
+do_real_communication = True
 
 app = Flask(__name__)
 
@@ -152,4 +152,4 @@ if __name__ == '__main__':
 
     threading.Thread(target=backend_thread).start()
 
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0")
