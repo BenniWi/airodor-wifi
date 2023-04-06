@@ -1,0 +1,16 @@
+'''This module provides tests for the airodor module'''
+import unittest
+
+
+class TestAirodorWebApp(unittest.TestCase):
+    '''This module provides tests for the airodor module'''
+
+    def test_dummy(self):
+        """
+        Just a test dummy 
+        """
+        self.assertEqual(0,0)
+
+
+if __name__ == '__main__':
+    unittest.main()
