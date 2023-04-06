@@ -21,11 +21,14 @@ do_real_communication = True
 
 app = Flask(__name__)
 
+backend_running = False
+
 
 def backend_thread():
     while 1:
+        # print(datetime.now().time())
         check_and_update_timers()
-        time.sleep(30)
+        time.sleep(10)
 
 
 def add_message_to_queue(message: str):
@@ -67,6 +70,10 @@ def check_and_update_timers():
 
 @app.route('/')
 def index():
+    global backend_running
+    if not backend_running:
+        threading.Thread(target=backend_thread).start()
+        backend_running = True
     now = datetime.now(timezone)
     if do_real_communication:
         vent_mode_A = airodor.get_mode(current_ip, group=airodor.VentilationGroup.A)
@@ -151,7 +158,9 @@ def remove_timer():
     return redirect(url_for("index"))
 
 
-if __name__ == '__main__':
-    threading.Thread(target=backend_thread).start()
-
+def main():
     app.run(debug=True, host="0.0.0.0")
+
+
+if __name__ == '__main__':
+    main()
