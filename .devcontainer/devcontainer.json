@@ -4,11 +4,11 @@
     "cpus": 2
   },
   "waitFor": "onCreateCommand",
-  "updateContentCommand": "pip install -r requirements.txt && curl -sSL https://install.python-poetry.org | python3",
+  "updateContentCommand": "curl -sSL https://install.python-poetry.org | python3",
   "postCreateCommand": "",
-  "postAttachCommand": {
-    "server": "flask --debug run"
-  },
+  //"postAttachCommand": {
+  //  "server": "flask --debug run"
+  //},
   "portsAttributes": {
     "5000": {
       "label": "Application",
