@@ -21,11 +21,14 @@ do_real_communication = True
 
 app = Flask(__name__)
 
+backend_running = False
+
 
 def backend_thread():
     while 1:
+        # print(datetime.now().time())
         check_and_update_timers()
-        time.sleep(30)
+        time.sleep(10)
 
 
 def add_message_to_queue(message: str):
@@ -67,6 +70,10 @@ def check_and_update_timers():
 
 @app.route('/')
 def index():
+    global backend_running
+    if not backend_running:
+        threading.Thread(target=backend_thread).start()
+        backend_running = True
     now = datetime.now(timezone)
     if do_real_communication:
         vent_mode_A = airodor.get_mode(current_ip, group=airodor.VentilationGroup.A)
@@ -80,14 +87,14 @@ def index():
         else:
             add_message_to_queue("Error reading status for group B")
     else:
-        vent_mode_A = airodor.VentilationMode.ALTERNATING_MAX
+        vent_mode_A = airodor.VentilationModeRead.ALTERNATING_MAX
         add_message_to_queue("Success reading status for group A")
-        vent_mode_B = airodor.VentilationMode.INSIDE_MED
+        vent_mode_B = airodor.VentilationModeRead.INSIDE_MED
         add_message_to_queue("Success reading status for group B")
     return render_template(
         'index.html',
         ip_address=current_ip,
-        ventilation_modes=airodor.VentilationMode,
+        ventilation_modes=airodor.VentilationModeSet,
         status_string_group_A=vent_mode_A.name,
         status_time_group_A=now.strftime("%X"),
         status_string_group_B=vent_mode_B.name,
@@ -119,7 +126,7 @@ def add_timer():
         group = request.form.get('group_select')
         print("timer:group {}, mode {}, value {}".format(group, mode, deltatime))
         if mode >= 0:
-            mode = airodor.VentilationMode(mode)
+            mode = airodor.VentilationModeSet(mode)
             if group == "both":
                 group = [airodor.VentilationGroup("A"), airodor.VentilationGroup("B")]
             else:
@@ -151,7 +158,9 @@ def remove_timer():
     return redirect(url_for("index"))
 
 
-if __name__ == '__main__':
-    threading.Thread(target=backend_thread).start()
-
+def main():
     app.run(debug=True, host="0.0.0.0")
+
+
+if __name__ == '__main__':
+    main()

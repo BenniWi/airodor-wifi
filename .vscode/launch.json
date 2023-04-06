@@ -1,0 +1,35 @@
+{
+    "configurations": [
+        {
+            "name": "Python: Aktuelle Datei",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "python": "${workspaceFolder}/airodor_web_app/.venv/bin/python",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "env": {
+                "FLASK_DEBUG": "1"
+              }
+        },
+        {
+            "name": "airodor_web_app",
+            "type": "python",
+            "python": "${workspaceFolder}/airodor_web_app/.venv/bin/python",
+            "cwd": "${workspaceFolder}/airodor_web_app",
+            "request": "launch",
+            "module": "flask",
+            "args": [
+                "--app",
+                "./airodor_web_app/app.py",
+                "run",
+                "--debug",
+                "--host=0.0.0.0"
+            ],
+            "justMyCode": true,
+            "env": {
+                "FLASK_DEBUG": "1"
+              }
+        }
+    ]
+}

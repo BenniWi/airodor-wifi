@@ -10,6 +10,12 @@ This repository provides two [poetry](https://python-poetry.org/) packages
 curl -sSL https://install.python-poetry.org | python3
 ```
 
+### create local venv with poetry
+
+```bash
+poetry config virtualenvs.in-project true
+```
+
 ## connect codespace with local network
 using the GitHub cli:
 ```bash
