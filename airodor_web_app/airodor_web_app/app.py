@@ -1,11 +1,12 @@
-from flask import Flask, render_template, url_for, redirect, request
-from airodor_wifi_api import airodor
 import ipaddress
-from datetime import datetime, timedelta
-import pytz
 import threading
 import time
+from datetime import datetime, timedelta
 from queue import Queue
+
+import pytz
+from airodor_wifi_api import airodor
+from flask import Flask, redirect, render_template, request, url_for
 
 default_IP = ipaddress.ip_address("192.168.2.122")
 current_ip = default_IP
@@ -57,8 +58,9 @@ def check_and_update_timers():
                     if is_ok:
                         print("removing timer {}".format(timer))
                         timer_dict[td].timer_list.remove(timer)  # ... remove from the original
-                        add_message_to_queue("success for timer with group {} and mode {}".format(
-                                                                                    timer.group, timer.mode))
+                        add_message_to_queue(
+                            "success for timer with group {} and mode {}".format(timer.group, timer.mode)
+                        )
                     else:
                         add_message_to_queue("Error processing queue")
 
@@ -82,16 +84,18 @@ def index():
         add_message_to_queue("Success reading status for group A")
         vent_mode_B = airodor.VentilationMode.INSIDE_MED
         add_message_to_queue("Success reading status for group B")
-    return render_template('index.html',
-                           ip_address=current_ip,
-                           ventilation_modes=airodor.VentilationMode,
-                           status_string_group_A=vent_mode_A.name,
-                           status_time_group_A=now.strftime("%X"),
-                           status_string_group_B=vent_mode_B.name,
-                           status_time_group_B=now.strftime("%X"),
-                           timer_list_A=timer_dict["A"].create_string_list(),
-                           timer_list_B=timer_dict["B"].create_string_list(),
-                           comm_log=message_queue_to_string())
+    return render_template(
+        'index.html',
+        ip_address=current_ip,
+        ventilation_modes=airodor.VentilationMode,
+        status_string_group_A=vent_mode_A.name,
+        status_time_group_A=now.strftime("%X"),
+        status_string_group_B=vent_mode_B.name,
+        status_time_group_B=now.strftime("%X"),
+        timer_list_A=timer_dict["A"].create_string_list(),
+        timer_list_B=timer_dict["B"].create_string_list(),
+        comm_log=message_queue_to_string(),
+    )
 
 
 @app.route('/updateIP/', methods=['POST'])
@@ -123,8 +127,7 @@ def add_timer():
 
             for g in group:
                 global timer_dict
-                timer_dict[g.name].add_list_item(datetime.now(timezone)
-                                                 + timedelta(minutes=deltatime), g, mode)
+                timer_dict[g.name].add_list_item(datetime.now(timezone) + timedelta(minutes=deltatime), g, mode)
 
     print(timer_dict["A"].create_string_list())
     print(timer_dict["B"].create_string_list())
@@ -149,7 +152,6 @@ def remove_timer():
 
 
 if __name__ == '__main__':
-
     threading.Thread(target=backend_thread).start()
 
     app.run(debug=True, host="0.0.0.0")

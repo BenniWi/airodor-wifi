@@ -159,3 +159,4 @@ def set_mode(ip_addr: ip_address, group: VentilationGroup, mode: VentilationMode
         return is_ok
     except requests.exceptions.Timeout:
         return False
+

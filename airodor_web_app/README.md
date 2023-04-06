@@ -15,6 +15,19 @@ curl -sSL https://install.python-poetry.org | python3 - --version $(cat ./.poetr
 poetry self add poetry-multiproject-plugin
 ```
 
+### Debugging the API when using the WebApp
+in [pyproject.toml](pyproject.toml): 
+1. comment line 
+
+    ```
+    airodor_wifi_api = { git = "https://github.com/BenniWi/airodor-wifi.git", subdirectory = "airodor_wifi_api", branch = "main" }
+    ```
+2. uncomment line 
+
+    ```
+    # airodor_wifi_api = {path = "../airodor_wifi_api", develop = true}
+    ```
+
 
 ## connect codespace with local network
 using the GitHub cli:

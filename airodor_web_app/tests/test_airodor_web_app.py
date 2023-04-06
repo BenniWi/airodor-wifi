@@ -7,9 +7,9 @@ class TestAirodorWebApp(unittest.TestCase):
 
     def test_dummy(self):
         """
-        Just a test dummy 
+        Just a test dummy
         """
-        self.assertEqual(0,0)
+        self.assertEqual(0, 0)
 
 
 if __name__ == '__main__':
