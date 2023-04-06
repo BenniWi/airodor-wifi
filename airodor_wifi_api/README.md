@@ -59,6 +59,10 @@ mode:
     32 = med (permanent only to inside)
     64 = max (permanent only to inside)
 ```
+
+right after setting a new mode, the returned mode is the "set" mode value. 
+After some seconds the mode switches to the "read" mode values
+
 ```
   timer modes: (timers are only usable to turn the ventilation off, not for other modes)
     0 = off 

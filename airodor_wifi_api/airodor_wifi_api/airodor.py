@@ -30,19 +30,30 @@ class VentilationAction(ExtendedEnum):
     SET_OFF_TIMER = "S"
 
 
-class VentilationMode(ExtendedEnum):
-    '''Basic enum to represent the available ventilation modes'''
+class VentilationModeSet(ExtendedEnum):
+    '''Basic enum to represent the available ventilation modes when setting modes'''
 
     OFF = 0
     ALTERNATING_MIN = 1
     ALTERNATING_MED = 2
-    ALTERNATING_MAX = 46
-    ALTERNATING_MAX_S = 4
-    ALTERNATING_MAX_R = 6
+    ALTERNATING_MAX = 4
     ONE_DIR_MED = 8
     ONE_DIR_MAX = 16
     INSIDE_MED = 32
     INSIDE_MAX = 64
+
+
+class VentilationModeRead(ExtendedEnum):
+    '''Basic enum to represent the available ventilation modes when reading modes'''
+
+    OFF = 0
+    ALTERNATING_MIN = 1
+    ALTERNATING_MED = 2
+    ALTERNATING_MAX = 6
+    ONE_DIR_MED = 10
+    ONE_DIR_MAX = 18
+    INSIDE_MED = 34
+    INSIDE_MAX = 66
 
 
 class VentilationAnswerType(Enum):
@@ -60,7 +71,7 @@ class VentilationTimerList:
     class VentilationTimerEntry:
         '''helper class to hold all necessary data of a timer list entry'''
 
-        def __init__(self, time: datetime, group: VentilationGroup, mode: VentilationMode):
+        def __init__(self, time: datetime, group: VentilationGroup, mode: VentilationModeSet):
             self.execution_time = time
             self.group = group
             self.mode = mode
@@ -68,7 +79,7 @@ class VentilationTimerList:
     def __init__(self):
         self.timer_list: List[self.VentilationTimerEntry] = []
 
-    def add_list_item(self, time: datetime, group: VentilationGroup, mode: VentilationMode):
+    def add_list_item(self, time: datetime, group: VentilationGroup, mode: VentilationModeSet):
         '''add a new entry to the timer list'''
         self.timer_list.append(self.VentilationTimerEntry(time=time, group=group, mode=mode))
         # in-place sorting is also possible
@@ -92,22 +103,13 @@ def get_base_api_url(ip_addr: ip_address) -> URL:
 
 
 def get_request_url(
-    ip_addr: ip_address, action: VentilationAction, group: VentilationGroup, mode: VentilationMode = ""
+    ip_addr: ip_address, action: VentilationAction, group: VentilationGroup, mode: VentilationModeSet = ""
 ) -> URL:
     '''create url for the required action, group and mode'''
     url = get_base_api_url(ip_addr=ip_addr)
-    if mode == VentilationMode.ALTERNATING_MAX_R:
-        assert action == VentilationAction.READ_MODE
-    if mode == VentilationMode.ALTERNATING_MAX_S:
-        assert action == VentilationAction.WRITE_MODE
-    if mode == VentilationMode.ALTERNATING_MAX:
-        if action == VentilationAction.READ_MODE:
-            mode = VentilationMode.ALTERNATING_MAX_R
-        elif action == VentilationAction.WRITE_MODE:
-            mode = VentilationMode.ALTERNATING_MAX_S
 
     if action == VentilationAction.WRITE_MODE:
-        assert VentilationMode != ""
+        assert VentilationModeSet != ""
         return URL(f"{url}{action.value}{group.value}{mode.value}")
     if action == VentilationAction.READ_MODE:
         return URL(f"{url}{action.value}{group.value}")
@@ -128,7 +130,13 @@ def interpret_answer(answer: requests.Response) -> tuple:
 
     if vat == VentilationAnswerType.R:
         # for read type, the character 2+ is the ventilation mode
-        return group, VentilationMode(int(answer.text[2:]))
+        try:
+            mode = VentilationModeRead(int(answer.text[2:]))
+        except ValueError:
+            # right after setting a mode, the answer is part of the "Set" enum
+            # it switches to the "Read" enum after some seconds
+            mode = VentilationModeSet(int(answer.text[2:]))
+        return group, mode
     if vat == VentilationAnswerType.M:
         # for write type, the character 2+ is the "OK" notifier
         return group, (answer.text[2:] == "OK")
@@ -136,7 +144,7 @@ def interpret_answer(answer: requests.Response) -> tuple:
     raise NotImplementedError(f"VentilationAnswer for {vat} is not yet implemented")
 
 
-def get_mode(ip_addr: ip_address, group: VentilationGroup) -> VentilationMode:
+def get_mode(ip_addr: ip_address, group: VentilationGroup) -> VentilationModeRead:
     '''get the current mode for the given ip and ventilation group'''
     print(f"getting status for group {group} from {ip_addr}")
     request = get_request_url(ip_addr=ip_addr, action=VentilationAction.READ_MODE, group=group)
@@ -149,7 +157,7 @@ def get_mode(ip_addr: ip_address, group: VentilationGroup) -> VentilationMode:
         return None
 
 
-def set_mode(ip_addr: ip_address, group: VentilationGroup, mode: VentilationMode) -> bool:
+def set_mode(ip_addr: ip_address, group: VentilationGroup, mode: VentilationModeRead) -> bool:
     '''set mode for the given ip and ventilation group'''
     request = get_request_url(ip_addr=ip_addr, action=VentilationAction.WRITE_MODE, group=group, mode=mode)
     try:
@@ -159,4 +167,3 @@ def set_mode(ip_addr: ip_address, group: VentilationGroup, mode: VentilationMode
         return is_ok
     except requests.exceptions.Timeout:
         return False
-
