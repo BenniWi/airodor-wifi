@@ -5,7 +5,7 @@ name: Python application
 
 on:
   push:
-    branches: [ "convert_to_poetry", "main" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
