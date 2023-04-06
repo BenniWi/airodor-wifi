@@ -1,9 +1,9 @@
-'''This module provides tests for the airodor module'''
+'''This module provides tests for the airodor web app'''
 import unittest
 
 
 class TestAirodorWebApp(unittest.TestCase):
-    '''This module provides tests for the airodor module'''
+    '''This module provides tests for the airodor web app'''
 
     def test_dummy(self):
         """
