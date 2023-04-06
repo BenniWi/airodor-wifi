@@ -1,10 +1,12 @@
 '''This module provides tests for the airodor module'''
 import unittest
-from ipaddress import ip_address
-from yarl import URL
-from airodor_wifi_api import airodor
-import requests
 from datetime import datetime
+from ipaddress import ip_address
+
+import requests
+from yarl import URL
+
+from airodor_wifi_api import airodor
 
 
 class TestAirodorApi(unittest.TestCase):
@@ -27,13 +29,15 @@ class TestAirodorApi(unittest.TestCase):
             ip_addr=ipv4,
             action=airodor.VentilationAction.WRITE_MODE,
             group=airodor.VentilationGroup.A,
-            mode=airodor.VentilationMode.ALTERNATING_MAX)
+            mode=airodor.VentilationMode.ALTERNATING_MAX,
+        )
         self.assertEqual(result, URL("http://192.168.2.122/msg?Function=WA4"))
         result = airodor.get_request_url(
             ip_addr=ipv4,
             action=airodor.VentilationAction.WRITE_MODE,
             group=airodor.VentilationGroup.A,
-            mode=airodor.VentilationMode.ALTERNATING_MED)
+            mode=airodor.VentilationMode.ALTERNATING_MED,
+        )
         self.assertEqual(result, URL("http://192.168.2.122/msg?Function=WA2"))
 
     def test_get_request_url_read(self):
@@ -42,14 +46,12 @@ class TestAirodorApi(unittest.TestCase):
         """
         ipv4 = ip_address('192.168.2.122')
         result = airodor.get_request_url(
-            ip_addr=ipv4,
-            action=airodor.VentilationAction.READ_MODE,
-            group=airodor.VentilationGroup.A)
+            ip_addr=ipv4, action=airodor.VentilationAction.READ_MODE, group=airodor.VentilationGroup.A
+        )
         self.assertEqual(result, URL("http://192.168.2.122/msg?Function=RA"))
         result = airodor.get_request_url(
-            ip_addr=ipv4,
-            action=airodor.VentilationAction.READ_MODE,
-            group=airodor.VentilationGroup.B)
+            ip_addr=ipv4, action=airodor.VentilationAction.READ_MODE, group=airodor.VentilationGroup.B
+        )
         self.assertEqual(result, URL("http://192.168.2.122/msg?Function=RB"))
 
     def test_interpret_answer(self):
@@ -83,28 +85,28 @@ class TestAirodorApi(unittest.TestCase):
         ventlist = airodor.VentilationTimerList()
         ventlist.add_list_item(
             # 1.11.2011 11:11:11 -> fourth entry
-            datetime(year=2011, month=11,
-                     day=1, hour=11, minute=11, second=11),
+            datetime(year=2011, month=11, day=1, hour=11, minute=11, second=11),
             airodor.VentilationGroup.A,
-            airodor.VentilationMode.INSIDE_MAX)
+            airodor.VentilationMode.INSIDE_MAX,
+        )
         ventlist.add_list_item(
             # 1.10.2011 11:11:11 -> third entry
-            datetime(year=2011, month=10,
-                     day=1, hour=11, minute=11, second=11),
+            datetime(year=2011, month=10, day=1, hour=11, minute=11, second=11),
             airodor.VentilationGroup.A,
-            airodor.VentilationMode.ALTERNATING_MAX)
+            airodor.VentilationMode.ALTERNATING_MAX,
+        )
         ventlist.add_list_item(
             # 1.11.2010 11:11:10 -> first entry
-            datetime(year=2010, month=11,
-                     day=1, hour=11, minute=11, second=10),
+            datetime(year=2010, month=11, day=1, hour=11, minute=11, second=10),
             airodor.VentilationGroup.A,
-            airodor.VentilationMode.ALTERNATING_MED)
+            airodor.VentilationMode.ALTERNATING_MED,
+        )
         ventlist.add_list_item(
             # 1.11.2010 11:11:11 -> second entry
-            datetime(year=2010, month=11,
-                     day=1, hour=11, minute=11, second=11),
+            datetime(year=2010, month=11, day=1, hour=11, minute=11, second=11),
             airodor.VentilationGroup.A,
-            airodor.VentilationMode.ALTERNATING_MIN)
+            airodor.VentilationMode.ALTERNATING_MIN,
+        )
 
         # order of VentilationMode should be:
         # ALTERNATING_MED, ALTERNATING_MIN, ALTERNATING_MAX, INSIDE_MAX
