@@ -4,7 +4,7 @@
     "cpus": 2
   },
   "waitFor": "onCreateCommand",
-  "updateContentCommand": "pip install -r requirements.txt",
+  "updateContentCommand": "pip install -r requirements.txt && curl -sSL https://install.python-poetry.org | python3",
   "postCreateCommand": "",
   "postAttachCommand": {
     "server": "flask --debug run"

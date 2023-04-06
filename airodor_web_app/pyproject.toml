@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "airodor-web-app"
+version = "0.1.0"
+description = ""
+authors = ["BenniWi <benjamin.wilking@gmail.com>"]
+readme = "README.md"
+packages = [
+    { include = "airodor_web_app", from = "." }
+    { include = "airodor_wifi_api", from = "../airodor_wifi_api" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+flask = "^2.2.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

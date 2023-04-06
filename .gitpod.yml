@@ -11,7 +11,7 @@ vscode:
     - mhutchie.git-graph
 
 tasks:
-  - init: pip install -r requirements.txt
+  - init: pip install -r requirements.txt && curl -sSL https://install.python-poetry.org | python3
     command: python app.py
 
 ports:
