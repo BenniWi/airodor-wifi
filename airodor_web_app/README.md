@@ -1,5 +1,5 @@
 
-# airodor-wifi
+# airodor-web-app
 provide a simple web application and api for the airodor wifi module from limot
 
 To run this application:
