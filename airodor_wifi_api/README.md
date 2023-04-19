@@ -49,15 +49,26 @@ RD68
 ```
 mode: 
   ventilation modes:
+  
+  reading status
     0 = Off 
-    1 = min (alternating)
-    2 = med (alternating)
-    4 = max (alternating, when setting) 
-    6 = max (alternating, when reading) 
-    8 = med (permanent one direction)
-    16 = max (permanent one direction)
-    32 = med (permanent only to inside)
-    64 = max (permanent only to inside)
+    1 = min - alternating 
+    2 = med - alternating
+    4 = max - alternating 
+    8 = med - permanent one direction
+    16 = max - permanent one direction
+    32 = med - permanent only to inside
+    64 = max - permanent only to inside
+    
+  writing status
+    0 = Off 
+    1 = min - alternating 
+    2 = med - alternating
+    6 = max - alternating 
+    10 = med - permanent one direction
+    18 = max - permanent one direction
+    34 = med - permanent only to inside
+    66 = max - permanent only to inside
 ```
 
 right after setting a new mode, the returned mode is the "set" mode value. 
