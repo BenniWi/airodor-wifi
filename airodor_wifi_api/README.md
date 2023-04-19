@@ -50,7 +50,7 @@ RD68
 mode: 
   ventilation modes:
   
-  reading status
+  setting status
     0 = Off 
     1 = min - alternating 
     2 = med - alternating
@@ -60,7 +60,7 @@ mode:
     32 = med - permanent only to inside
     64 = max - permanent only to inside
     
-  writing status
+  reading status
     0 = Off 
     1 = min - alternating 
     2 = med - alternating
