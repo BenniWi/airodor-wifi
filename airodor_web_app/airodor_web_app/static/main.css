@@ -1,5 +1,5 @@
 body {
-    margin: 0;
+    margin: 10;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
         "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
         sans-serif;
@@ -10,6 +10,20 @@ body {
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
         monospace;
+}
+
+textarea {
+    background-color: rgb(255, 255, 255);
+    font-size: 1em;
+    font-weight: bold;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    border: 1px solid black;
+}
+
+textarea  
+{  
+   font-family:"Times New Roman", Times, serif;  
+   font-size: 12px;   
 }
 
 .App {
