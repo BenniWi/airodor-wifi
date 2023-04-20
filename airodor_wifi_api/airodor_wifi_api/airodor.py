@@ -5,6 +5,7 @@ from ipaddress import ip_address
 from typing import List
 
 import requests
+import time
 from yarl import URL
 
 
@@ -164,6 +165,7 @@ def set_mode(ip_addr: ip_address, group: VentilationGroup, mode: VentilationMode
         r = requests.get(str(request), timeout=10)
         r_group, is_ok = interpret_answer(r)
         assert r_group == group  # answer should fit to the request
+        time.sleep(1)
         return is_ok
     except requests.exceptions.Timeout:
         return False
