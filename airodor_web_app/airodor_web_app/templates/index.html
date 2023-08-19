@@ -24,6 +24,11 @@
   last update <input type="time" name="statusTimeB" value={{status_time_group_B}} readonly>
   </br>
 
+  <form action="/both_one_dir_max_now_alternate_med_500/" method="post">
+    <label for="FastAction">Fast action:</label>
+    <button type="submit">A/B - ONE_DIR_MAX & ALT_MED in 500</button>
+  </form>
+
   <form action="/add_timer/" method="post">
     <label for="Group">Set Group:</label>
     <select name="group_select" id="group_select">
@@ -70,7 +75,7 @@
   <a href="/"><input type="button" value="updateStatus"></a>
   </br>
   </br>
-  <textarea name="Communication Log" placeholder="{{comm_log}}" cols="70" rows="10" minlength="1" maxlength="500" readonly></textarea>
+  <textarea name="Communication Log" placeholder="{{comm_log}}" cols="60" rows="12" minlength="1" maxlength="500" readonly></textarea>
 
 </body>
 </html>

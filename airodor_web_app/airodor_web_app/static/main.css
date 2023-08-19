@@ -14,7 +14,7 @@ code {
 
 textarea {
     background-color: rgb(255, 255, 255);
-    font-size: 10px;
+    font-size: 0.5em;
     font-weight: bold;
     font-family:"Times New Roman", Times, serif;
     border: 1px solid black;
@@ -22,12 +22,12 @@ textarea {
 
 #timer_list_A{
     font-family:"Times New Roman", Times, serif;
-    font-size: 10px;
+    font-size: 0.5em;
 }
 
 #timer_list_B{
     font-family:"Times New Roman", Times, serif;
-    font-size: 10px;
+    font-size: 0.5em;
 }
 
 .App {

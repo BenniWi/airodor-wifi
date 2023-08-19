@@ -64,7 +64,7 @@ def check_and_update_timers():
                         print("removing timer {}".format(timer))
                         timer_dict[td].timer_list.remove(timer)  # ... remove from the original
                         add_message_to_queue(
-                            "success for timer with group {} and mode {}".format(timer.group, timer.mode)
+                            "success for timer with group {} and mode {}".format(timer.group.name, timer.mode.name)
                         )
                     else:
                         add_message_to_queue("Error processing queue")
@@ -138,8 +138,6 @@ def add_timer():
                 global timer_dict
                 timer_dict[g.name].add_list_item(datetime.now(timezone) + timedelta(minutes=deltatime), g, mode)
 
-    print(timer_dict["A"].create_string_list())
-    print(timer_dict["B"].create_string_list())
     check_and_update_timers()
     return redirect(url_for("index"))
 
@@ -157,6 +155,22 @@ def remove_timer():
             for remove_index in remove_from[remove_list_key]:
                 del timer_dict[remove_list_key].timer_list[int(remove_index)]
 
+    return redirect(url_for("index"))
+
+
+@app.route('/both_one_dir_max_now_alternate_med_500/', methods=['POST'])
+def both_one_dir_max_now_alternate_med_500():
+    print('new timer')
+    if request.method == "POST":
+        group = [airodor.VentilationGroup("A"), airodor.VentilationGroup("B")]
+
+        for g in group:
+            global timer_dict
+            timer_dict[g.name].add_list_item(datetime.now(timezone), g, airodor.VentilationModeSet.ONE_DIR_MAX)
+            timer_dict[g.name].add_list_item(datetime.now(timezone) + timedelta(minutes=500),
+                                             g, airodor.VentilationModeSet.ALTERNATING_MED)
+
+    check_and_update_timers()
     return redirect(url_for("index"))
 
 
