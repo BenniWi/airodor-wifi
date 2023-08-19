@@ -5,7 +5,7 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "python": "${workspaceFolder}/airodor_web_app/.venv/bin/python",
+            "python": "${workspaceFolder}/airodor_web_app/.venv/bin/python3",
             "console": "integratedTerminal",
             "justMyCode": false,
             "env": {
@@ -15,7 +15,7 @@
         {
             "name": "airodor_web_app",
             "type": "python",
-            "python": "${workspaceFolder}/airodor_web_app/.venv/bin/python",
+            "python": "${workspaceFolder}/airodor_web_app/.venv/bin/python3",
             "cwd": "${workspaceFolder}/airodor_web_app",
             "request": "launch",
             "module": "flask",

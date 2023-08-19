@@ -15,6 +15,13 @@ curl -sSL https://install.python-poetry.org | python3 - --version $(cat ./.poetr
 poetry self add poetry-multiproject-plugin
 ```
 
+### Prepare poetry Environment
+
+```bash
+poetry config virtualenvs.in-project true
+cd airodor_web_app && poetry install
+```
+
 ### Debugging the API when using the WebApp
 in [pyproject.toml](pyproject.toml): 
 1. comment line 

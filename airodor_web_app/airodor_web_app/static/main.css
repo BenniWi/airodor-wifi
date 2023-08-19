@@ -14,16 +14,20 @@ code {
 
 textarea {
     background-color: rgb(255, 255, 255);
-    font-size: 1em;
+    font-size: 10px;
     font-weight: bold;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-family:"Times New Roman", Times, serif;
     border: 1px solid black;
 }
 
-textarea  
-{  
-   font-family:"Times New Roman", Times, serif;  
-   font-size: 12px;   
+#timer_list_A{
+    font-family:"Times New Roman", Times, serif;
+    font-size: 10px;
+}
+
+#timer_list_B{
+    font-family:"Times New Roman", Times, serif;
+    font-size: 10px;
 }
 
 .App {

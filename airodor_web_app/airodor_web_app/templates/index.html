@@ -48,18 +48,18 @@
   <form action="/remove_timer/" method="post">
     Timer queue for group A
     </br>
-    <select name="timer_list_A" size="10" multiple="multiple">  
+    <select name="timer_list_A" id="timer_list_A" size="10" multiple="multiple">  
       {% for t in timer_list_A %}
-        <option value={{loop.index0}}  label={{t}}>{{t}}</option>
+        <option value={{loop.index0}}  label="{{t}}">{{t}}</option>
       {% endfor %} 
     </select>  
     </br>
 
     Timer queue for group B
     </br>
-    <select name="timer_list_B" size="10" multiple="multiple">  
+    <select name="timer_list_B" id="timer_list_B" size="10" multiple="multiple">  
       {% for t in timer_list_B %}
-        <option value={{loop.index0}}  label={{t}}>{{t}}</option>
+        <option value={{loop.index0}}  label="{{t}}">{{t}}</option>
       {% endfor %} 
     </select>  
     </br>

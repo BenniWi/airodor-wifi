@@ -11,6 +11,6 @@ else
     cd airodor_web_app
     poetry install
     cd airodor_web_app
-    poetry run flask run --host=0.0.0.0 --port=3849
+    poetry run flask run --host=0.0.0.0 --port=3849 --debug=False
 fi
 

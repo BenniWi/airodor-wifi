@@ -1,4 +1,6 @@
 {
+    "python.envFile": "${workspaceFolder}/airodor_web_app/.venv",
+    
     "python.testing.pytestArgs": [
         "."
     ],

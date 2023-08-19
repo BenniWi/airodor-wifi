@@ -17,10 +17,12 @@ timezone = pytz.timezone('Europe/Berlin')
 lock_message_queue = threading.Lock()
 return_message_queue = Queue(maxsize=10)
 
+# enable/disable real communication with the ventilation device
 do_real_communication = True
 
 app = Flask(__name__)
 
+# status variable to check if the backend thread is running
 backend_running = False
 
 
