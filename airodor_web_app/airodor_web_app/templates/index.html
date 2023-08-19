@@ -51,31 +51,61 @@
 
 
   <form action="/remove_timer/" method="post">
-    Timer queue for group A
-    </br>
-    <select name="timer_list_A" id="timer_list_A" size="10" multiple="multiple">  
-      {% for t in timer_list_A %}
-        <option value={{loop.index0}}  label="{{t}}">{{t}}</option>
-      {% endfor %} 
-    </select>  
+    <div class="options-container">
+      <p class="list-title">Timer queue for group A</p>
+      <ul class="option-list">
+        {% for t in timer_list_A %}
+        <li class="option">
+          <input type="checkbox" name="selected_indices_listA" value="{{loop.index0}}" id="CheckboxA{{loop.index0}}">
+          <label for="CheckboxA{{loop.index0}}">{{t}}</label>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
     </br>
 
-    Timer queue for group B
+    <div class="options-container">
+      <p class="list-title">Timer queue for group B</p>
+      <ul class="option-list">
+        {% for t in timer_list_B %}
+        <li class="option">
+          <input type="checkbox" name="selected_indices_listB" value="{{loop.index0}}" id="CheckboxB{{loop.index0}}">
+          <label for="CheckboxB{{loop.index0}}">{{t}}</label>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
     </br>
-    <select name="timer_list_B" id="timer_list_B" size="10" multiple="multiple">  
-      {% for t in timer_list_B %}
-        <option value={{loop.index0}}  label="{{t}}">{{t}}</option>
-      {% endfor %} 
-    </select>  
-    </br>
-    </br>
-    <button type="submit" value="remove">remove selected timer</button>
+    <button type="submit" value="remove" id="submitBtn" style="display: none;">remove selected timer</button>
   </form>
 
   <a href="/"><input type="button" value="updateStatus"></a>
   </br>
   </br>
   <textarea name="Communication Log" placeholder="{{comm_log}}" cols="60" rows="12" minlength="1" maxlength="500" readonly></textarea>
+
+  <script>
+    // JavaScript to hide empty options containers and submit button
+    const optionsContainers = document.querySelectorAll('.options-container');
+    let isEmpty = true;
+  
+    optionsContainers.forEach(container => {
+      const optionList = container.querySelector('.option-list');
+      if (optionList && optionList.children.length === 0) {
+        container.style.display = 'none';
+      } else {
+        isEmpty = false;
+      }
+    });
+  
+    const submitButton = document.getElementById('submitBtn');
+    if (submitButton) {
+      if (!isEmpty) {
+        submitButton.style.display = 'inline-block';
+      }
+    }
+  </script>
 
 </body>
 </html>

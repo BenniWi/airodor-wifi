@@ -64,7 +64,7 @@ def check_and_update_timers():
                         print("removing timer {}".format(timer))
                         timer_dict[td].timer_list.remove(timer)  # ... remove from the original
                         add_message_to_queue(
-                            "success for timer with group {} and mode {}".format(timer.group.name, timer.mode.name)
+                            "Executed timer for group {} and mode {}".format(timer.group.name, timer.mode.name)
                         )
                     else:
                         add_message_to_queue("Error processing queue")
@@ -137,6 +137,9 @@ def add_timer():
             for g in group:
                 global timer_dict
                 timer_dict[g.name].add_list_item(datetime.now(timezone) + timedelta(minutes=deltatime), g, mode)
+                add_message_to_queue(
+                            "Added timer for group {} with mode {}".format(g.name, mode.name)
+                        )
 
     check_and_update_timers()
     return redirect(url_for("index"))
@@ -147,12 +150,20 @@ def remove_timer():
     print('remove timer')
     if request.method == "POST":
         remove_from = dict()
-        remove_from["A"] = request.form.getlist('timer_list_A')
-        remove_from["B"] = request.form.getlist('timer_list_B')
+        remove_from["A"] = request.form.getlist('selected_indices_listA')
+        remove_from["B"] = request.form.getlist('selected_indices_listB')
 
         global timer_dict
         for remove_list_key in remove_from:
-            for remove_index in remove_from[remove_list_key]:
+            # we have to remove the higher indices first, otherwise we can not loop
+            remove_indices = [int(i) for i in remove_from[remove_list_key]]
+            remove_indices.reverse()
+            for remove_index in remove_indices:
+                add_message_to_queue(
+                            "Removed timer for group {} with mode {}".format(
+                                timer_dict[remove_list_key].timer_list[remove_index].group.name,
+                                timer_dict[remove_list_key].timer_list[remove_index].mode.name)
+                )
                 del timer_dict[remove_list_key].timer_list[int(remove_index)]
 
     return redirect(url_for("index"))
@@ -169,6 +180,7 @@ def both_one_dir_max_now_alternate_med_500():
             timer_dict[g.name].add_list_item(datetime.now(timezone), g, airodor.VentilationModeSet.ONE_DIR_MAX)
             timer_dict[g.name].add_list_item(datetime.now(timezone) + timedelta(minutes=500),
                                              g, airodor.VentilationModeSet.ALTERNATING_MED)
+        add_message_to_queue("Fast action: ONE_DIR_MAX now and ALTERNATING_MED in 500m")
 
     check_and_update_timers()
     return redirect(url_for("index"))
