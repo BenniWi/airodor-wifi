@@ -9,6 +9,7 @@ packages = [{ include = "airodor_web_app", from = "." }]
 [tool.poetry.dependencies]
 python = "^3.8"
 flask = "^2.2.3"
+pytz = "^2023.3"
 # airodor_wifi_api = { git = "https://github.com/BenniWi/airodor-wifi.git", subdirectory = "airodor_wifi_api", branch = "main" }
 airodor_wifi_api = {path = "../airodor_wifi_api", develop = true}
 
