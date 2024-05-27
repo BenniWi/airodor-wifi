@@ -1,4 +1,5 @@
 import ipaddress
+import os
 import threading
 import time
 from datetime import datetime, timedelta
@@ -8,8 +9,15 @@ import pytz
 from airodor_wifi_api import airodor
 from flask import Flask, redirect, render_template, request, url_for
 
+env_variable_venilation_address = "VENTILATION_ADDRESS"
 default_IP = ipaddress.ip_address("192.168.2.122")
-current_ip = default_IP
+
+# check if ipadress is given as environment variable
+if env_variable_venilation_address in os.environ:
+    current_ip = ipaddress.ip_address(os.environ[env_variable_venilation_address])
+else:
+    current_ip = default_IP
+
 lock_timer_dict = threading.Lock()
 timer_dict = {"A": airodor.VentilationTimerList(), "B": airodor.VentilationTimerList()}
 timezone = pytz.timezone('Europe/Berlin')
