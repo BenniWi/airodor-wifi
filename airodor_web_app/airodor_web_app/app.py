@@ -11,12 +11,21 @@ from flask import Flask, redirect, render_template, request, url_for
 
 env_variable_venilation_address = "VENTILATION_ADDRESS"
 default_IP = ipaddress.ip_address("192.168.2.122")
+env_variable_server_name = "SERVER_NAME"
+default_server_name = "Ventilation Server"
+env_variable_test_mode = "TEST_MODE"
 
 # check if ipadress is given as environment variable
 if env_variable_venilation_address in os.environ:
     current_ip = ipaddress.ip_address(os.environ[env_variable_venilation_address])
 else:
     current_ip = default_IP
+
+# check if server name is given as environment variable
+if env_variable_server_name in os.environ:
+    server_name = os.environ[env_variable_server_name]
+else:
+    server_name = default_server_name
 
 lock_timer_dict = threading.Lock()
 timer_dict = {"A": airodor.VentilationTimerList(), "B": airodor.VentilationTimerList()}
@@ -26,8 +35,13 @@ lock_message_queue = threading.Lock()
 return_message_queue = Queue(maxsize=10)
 
 # enable/disable real communication with the ventilation device
-do_real_communication = True
+do_real_communication = False
 
+# check if test mode is given as environment variable
+if env_variable_test_mode in os.environ:
+    do_real_communication = False
+else:
+    do_real_communication = True
 app = Flask(__name__)
 
 # status variable to check if the backend thread is running
@@ -103,6 +117,7 @@ def index():
         add_message_to_queue("Success reading status for group B")
     return render_template(
         'index.html',
+        server_name=server_name,
         ip_address=current_ip,
         ventilation_modes=airodor.VentilationModeSet,
         status_string_group_A=vent_mode_A.name,
@@ -145,9 +160,7 @@ def add_timer():
             for g in group:
                 global timer_dict
                 timer_dict[g.name].add_list_item(datetime.now(timezone) + timedelta(minutes=deltatime), g, mode)
-                add_message_to_queue(
-                            "Added timer for group {} with mode {}".format(g.name, mode.name)
-                        )
+                add_message_to_queue("Added timer for group {} with mode {}".format(g.name, mode.name))
 
     check_and_update_timers()
     return redirect(url_for("index"))
@@ -168,9 +181,10 @@ def remove_timer():
             remove_indices.reverse()
             for remove_index in remove_indices:
                 add_message_to_queue(
-                            "Removed timer for group {} with mode {}".format(
-                                timer_dict[remove_list_key].timer_list[remove_index].group.name,
-                                timer_dict[remove_list_key].timer_list[remove_index].mode.name)
+                    "Removed timer for group {} with mode {}".format(
+                        timer_dict[remove_list_key].timer_list[remove_index].group.name,
+                        timer_dict[remove_list_key].timer_list[remove_index].mode.name,
+                    )
                 )
                 del timer_dict[remove_list_key].timer_list[int(remove_index)]
 
@@ -186,8 +200,9 @@ def both_one_dir_max_now_alternate_med_500():
         for g in group:
             global timer_dict
             timer_dict[g.name].add_list_item(datetime.now(timezone), g, airodor.VentilationModeSet.ONE_DIR_MAX)
-            timer_dict[g.name].add_list_item(datetime.now(timezone) + timedelta(minutes=500),
-                                             g, airodor.VentilationModeSet.ALTERNATING_MED)
+            timer_dict[g.name].add_list_item(
+                datetime.now(timezone) + timedelta(minutes=500), g, airodor.VentilationModeSet.ALTERNATING_MED
+            )
         add_message_to_queue("Fast action: ONE_DIR_MAX now and ALTERNATING_MED in 500m")
 
     check_and_update_timers()

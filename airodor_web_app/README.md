@@ -4,7 +4,7 @@ provide a simple web application and api for the airodor wifi module from limot
 
 To run this application:
 
-```
+```bash
 poetry run flask run
 ```
 
