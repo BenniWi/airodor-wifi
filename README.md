@@ -42,5 +42,5 @@ docker build -t benniwi/airodor-wifi:latest --file ./container/Dockerfile .
 ```
 ### run the container 
 ```bash
-docker run --env TEST_MODE=1 --env VENTILATION_ADDRESS="1.1.1.1" --env SERVER_NAME="My Custom Server Name"  --expose=80 --rm -ti benniwi/airodor-wifi
+docker run --env TEST_MODE=1 --env VENTILATION_ADDRESS="1.1.1.1" --env SERVER_NAME="My Custom Server Name"  --expose=80 --rm -ti -p80:80 benniwi/airodor-wifi
 ```
